@@ -2,7 +2,11 @@
 
 @section('content')
     <h1 class="mb-10 text-2xl">Books</h1>
-    <form action=""></form>
+    <form class="mb-4 flex items-center space-x-2" action="" method="GET" action="{{ route('books.index') }}">
+        <input name="title" placeholder="Search by title" type="text" value="{{ request('title') }}" class="input h-11">
+        <button class="btn h-11" type="submit">Search</button>
+        <a href="{{ route('books.index') }}" class="btn h-11">Clear</a>
+    </form>
     <ul>
         @forelse ( $books as $book)
         <li class="mb-4">
