@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use Illuminate\Http\Request;
+// use Illuminate\Support\Facades\Cache;
 
 class BookController extends Controller
 {
@@ -14,21 +15,26 @@ class BookController extends Controller
     {
         $title = $request->input('title');
         $filter = $request->input('filter', '');
-        $books = Book::when($title, function($query, $title){
-            return $query->title($title);
-        });
 
-        $books= match($filter){
-            'popular_last_month'=>$books->popularLastMonth(),
-            'popular_last_6months'=>$books->popularLast6Month(),
-            'highest_rated_last_month'=>$books->highestRatedLastMonth(),
-            'highest_rated_last_6months'=>$books->highestRatedLast6Months(),
+        $books = Book::query();
 
-            default => $books->latest()
+        if ($title) {
+            $books = $books->title($title);
+        }
+
+        $books = match ($filter) {
+            'popular_last_month' => $books->popularLastMonth(),
+            'popular_last_6months' => $books->popularLast6Month(),
+            'highest_rated_last_month' => $books->highestRatedLastMonth(),
+            'highest_rated_last_6months' => $books->highestRatedLast6Months(),
+            default => $books->latest(),
         };
-        $books = $books->get();
 
-        return view('books.index', ['books'=> $books]);
+        $cacheKey = 'books:' . $filter . ':' . ($title ?? 'all');
+
+        $books = cache()->remember($cacheKey, 3600, fn () => $books->get());
+
+        return view('books.index', ['books' => $books]);
     }
 
     /**
