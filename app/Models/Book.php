@@ -12,6 +12,14 @@ class Book extends Model
 
     protected $fillable = ['review', 'rating'];
 
+    protected function casts(): array
+    {
+        return [
+            'reviews_avg_rating' => 'float',
+            'reviews_count' => 'integer',
+        ];
+    }
+
     public function reviews(){
         return $this->hasMany(Review::class);
     }
