@@ -2,7 +2,8 @@
 
 @section('content')
   <div class="mb-4">
-    <h1 class="mb-2 text-2xl">{{ $book->title }}</h1>
+    <p class="mb-2 text-sm font-semibold uppercase tracking-widest" style="color: var(--accent);">Book details</p>
+    <h1 class="page-heading mb-2 text-4xl">{{ $book->title }}</h1>
 
     <div class="book-info">
       <div class="book-author mb-4 text-lg font-semibold">by {{ $book->author }}</div>
@@ -17,8 +18,12 @@
     </div>
   </div>
 
+  <div class="mb-4">
+    <a href="{{ route('books.reviews.create',$book) }}" class="reset-link">Add a review!</a>
+  </div>
+
   <div>
-    <h2 class="mb-4 text-xl font-semibold">Reviews</h2>
+    <h2 class="section-heading mb-4 text-2xl font-semibold">Reviews</h2>
     <ul>
       @forelse ($book->reviews as $review)
         <li class="book-item mb-4">
