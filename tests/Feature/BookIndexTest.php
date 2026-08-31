@@ -64,9 +64,15 @@ class BookIndexTest extends TestCase
             'title' => 'The Detail Book',
         ]);
 
+        Review::factory()->for($book)->create([
+            'rating' => 4,
+        ]);
+
         $response = $this->get('/books/' . $book->id);
 
         $response->assertOk();
         $response->assertSee('The Detail Book');
+        $response->assertSee('★');
+        $response->assertSee('☆');
     }
 }
