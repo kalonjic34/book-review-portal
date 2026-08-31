@@ -4,11 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use PhpParser\Node\Expr\FuncCall;
 
 class Review extends Model
 {
     use HasFactory;
+
+    protected $fillable = ['review', 'rating'];
 
     protected function casts(): array
     {
@@ -25,5 +26,6 @@ class Review extends Model
     {
         static::updated(fn (Review $review)=> cache()->forget('book:'.$review->book_id));
         static::deleted(fn (Review $review)=> cache()->forget('book:'.$review->book_id));
+        static::created(fn (Review $review)=> cache()->forget('book:'.$review->book_id));
     }
 }
