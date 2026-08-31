@@ -19,7 +19,7 @@ class BookIndexTest extends TestCase
         ]);
 
         Review::factory()->count(3)->for($book)->good()->create([
-            'rating' => 5,
+            'rating' => 4,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
@@ -28,7 +28,8 @@ class BookIndexTest extends TestCase
 
         $response->assertOk();
         $response->assertSee('The Best Book');
-        $response->assertSee('5.0');
+        $response->assertSee('★');
+        $response->assertSee('☆');
         $response->assertSee('out of 3 reviews');
     }
 
@@ -54,7 +55,8 @@ class BookIndexTest extends TestCase
 
         $response->assertOk();
         $response->assertSee('The Trending Book');
-        $response->assertSee('4.0');
+        $response->assertSee('★');
+        $response->assertSee('☆');
         $response->assertSee('out of 3 reviews');
     }
 
@@ -74,5 +76,22 @@ class BookIndexTest extends TestCase
         $response->assertSee('The Detail Book');
         $response->assertSee('★');
         $response->assertSee('☆');
+    }
+
+    public function test_review_can_be_created_for_a_book(): void
+    {
+        $book = Book::factory()->create();
+
+        $response = $this->post('/books/' . $book->id . '/reviews', [
+            'review' => 'This review is long enough to pass.',
+            'rating' => 4,
+        ]);
+
+        $response->assertRedirect('/books/' . $book->id);
+        $this->assertDatabaseHas('reviews', [
+            'book_id' => $book->id,
+            'review' => 'This review is long enough to pass.',
+            'rating' => 4,
+        ]);
     }
 }
