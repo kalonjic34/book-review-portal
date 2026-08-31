@@ -1,3 +1,8 @@
-<div>
-    <!-- The biggest battle is the war against ignorance. - Mustafa Kemal Atatürk -->
-</div>
+@if ($rating)
+    @for ($i = 1; $i <=5;$i++)
+        {{ $i<=round($rating)?'★' : '☆' }}
+    @endfor
+    
+@else
+    No rating yet    
+@endif
