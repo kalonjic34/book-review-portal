@@ -1,15 +1,19 @@
 @extends('layouts.app')
 
 @section('content')
-    <h1 class="mb-10 text-2xl">Books</h1>
+    <div class="mb-8">
+        <p class="mb-2 text-sm font-semibold uppercase tracking-widest" style="color: var(--accent);">The reading room</p>
+        <h1 class="page-heading text-4xl">Books</h1>
+        <p class="mt-2 text-sm" style="color: var(--muted);">Find your next great read, by mood or by the crowd.</p>
+    </div>
     <form class="mb-4 flex items-center space-x-2" action="" method="GET" action="{{ route('books.index') }}">
         <input name="title" placeholder="Search by title" type="text" value="{{ request('title') }}" class="input h-11">
         <input type="hidden" name="filter" value="{{ request('filter') }}">
-        <button class="btn h-11" type="submit">Search</button>
+        <button class="btn btn-primary h-11" type="submit">Search</button>
         <a href="{{ route('books.index') }}" class="btn h-11">Clear</a>
     </form>
 
-    <div class="filter-container mb-4 flex">
+    <div class="filter-container">
         @php
             $filters=[
                 ''=> 'Latest',
