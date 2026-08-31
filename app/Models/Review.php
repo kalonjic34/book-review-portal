@@ -10,6 +10,13 @@ class Review extends Model
 {
     use HasFactory;
 
+    protected function casts(): array
+    {
+        return [
+            'rating' => 'float',
+        ];
+    }
+
     public function book(){
         return $this->belongsTo(Book::class);
     }
