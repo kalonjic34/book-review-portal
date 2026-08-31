@@ -19,6 +19,7 @@ class BookIndexTest extends TestCase
         ]);
 
         Review::factory()->count(3)->for($book)->good()->create([
+            'rating' => 5,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
@@ -27,5 +28,45 @@ class BookIndexTest extends TestCase
 
         $response->assertOk();
         $response->assertSee('The Best Book');
+        $response->assertSee('5.0');
+        $response->assertSee('out of 3 reviews');
+    }
+
+    public function test_popular_last_month_filter_renders_filtered_rating_and_count(): void
+    {
+        $book = Book::factory()->create([
+            'title' => 'The Trending Book',
+        ]);
+
+        Review::factory()->count(3)->for($book)->create([
+            'rating' => 4,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        Review::factory()->count(2)->for($book)->create([
+            'rating' => 1,
+            'created_at' => now()->subMonths(2),
+            'updated_at' => now()->subMonths(2),
+        ]);
+
+        $response = $this->get('/books?filter=popular_last_month');
+
+        $response->assertOk();
+        $response->assertSee('The Trending Book');
+        $response->assertSee('4.0');
+        $response->assertSee('out of 3 reviews');
+    }
+
+    public function test_book_show_page_loads_the_book_model(): void
+    {
+        $book = Book::factory()->create([
+            'title' => 'The Detail Book',
+        ]);
+
+        $response = $this->get('/books/' . $book->id);
+
+        $response->assertOk();
+        $response->assertSee('The Detail Book');
     }
 }
